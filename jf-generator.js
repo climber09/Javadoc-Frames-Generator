@@ -229,7 +229,7 @@
     try {
       content = fs.read(source)
           .replace('<title>', '<title>' + indexTitle)
-          .replace('%API_HEADING%', apiHeading)
+          .replace(/%API_HEADING%/g, apiHeading)
           .replace('%NEW_CONTENT%', content.join('\n'));
 
       fs.write(dest, content, 'w');
@@ -259,7 +259,7 @@
     try {
       content = fs.read(source)
           .replace('<title>', '<title>' + pageTitle)
-          .replace('%API_HEADING%', apiHeading)
+          .replace(/%API_HEADING%/g, apiHeading)
           .replace('%NEW_CONTENT%', content.join('\n'));
 
       fs.write(dest, content, 'w');
