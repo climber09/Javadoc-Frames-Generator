@@ -2,8 +2,7 @@
  * Files needed:
  *    jf-generator.js
  *    jf-config.js
- *    jf-export.js
- *    jf-page-util.js
+ *    jf-util.js
  *    templates/main.html
  *    templates/index-frame.html
  *    templates/allclasses-frame.html
@@ -18,15 +17,16 @@
   var system = require('system');
   var fs = require('fs');
   var config = require('./jf-config');
-  var util = require('./jf-export.js');
   var javadocHome = config.javadocHome;
   var apiHeading = config.apiHeading;
   var actions, indexTitle, javadocURI, packages, totalBytes;
+
   /*
    * A mapping of module names to a list of package names.
    * {module_name => [package_name...]}.
    */
   var ModuleToPkgMap = {};
+
   /*
    * A mapping of package names to the associated file system paths.
    * Package paths are relative to the javadoc_home directory, starting
@@ -95,7 +95,7 @@
       if (status !== 'success') {
         return callback('Failed to load ' + uri);
       } else {
-        page.injectJs('jf-page-util.js');
+        page.injectJs('jf-util.js');
 
         if (apiHeading === '' || apiHeading === 'undefined') {
           apiHeading = page.title.replace(/.*\(/, '').replace(/\).*$/, '').trim();
@@ -131,7 +131,7 @@
             }
           }
           sortKeys = Object.keys(fqnToContentMap);
-          sortKeys.sort(pageUtil.compareBySplitValue(' '));
+          sortKeys.sort(jfUtil.compareBySplitValue(' '));
           sortKeys.forEach(function (key, i) {
             lines.push(fqnToContentMap[key]);
           });
@@ -289,7 +289,7 @@
       if (status !== 'success') {
         return callback('Failed to load ' + uri);
       } else {
-        page.injectJs('jf-page-util.js');
+        page.injectJs('jf-util.js');
         content = page.evaluate(function() {
 
           var TypeSummary = {
@@ -310,7 +310,7 @@
 
           var lines = [];
           var sections = document.querySelectorAll('section');
-          var locPath = pageUtil.dirname(location.href);
+          var locPath = jfUtil.dirname(location.href);
           var tsName, links, linkPath, lKey, tsKeys, section, link;
 
           for (var i = 0, sLen = sections.length; i < sLen; i++) {
@@ -323,7 +323,7 @@
               link = links[j];
               // exclude members of the hierarchy outside of the current package by
               // comparing the current link against the link for the current package.
-              linkPath = pageUtil.dirname(link.toString());
+              linkPath = jfUtil.dirname(link.toString());
               if (linkPath !== locPath) {
                 continue;
               }
@@ -338,12 +338,12 @@
                 link.innerHTML = '<span class="interfaceName">' + link.innerHTML + '</span>';
               }
 
-              if (pageUtil.hasAncestor(link, section, function(n) {
+              if (jfUtil.hasAncestor(link, section, function(n) {
                 return ancestorTest(n, /\/?Exception.html$/);
               }) ) {
                 TypeSummary['Exception'][lKey] = link;
               }
-              else if (pageUtil.hasAncestor(link, section, function(n) {
+              else if (jfUtil.hasAncestor(link, section, function(n) {
                 return ancestorTest(n, /\/?Error.html$/);
               }) ) {
                 TypeSummary['Error'][lKey] = link;
@@ -358,7 +358,7 @@
           for (var t in TypeSummary) {
             tsKeys = Object.keys(TypeSummary[t]);
             if (tsKeys.length > 0) {
-              tsKeys.sort(pageUtil.compareIgnoreCase);
+              tsKeys.sort(jfUtil.compareIgnoreCase);
               tsName = (t === 'Class')? t.concat('es'): t.concat('s');
               lines.push('<h2 title="' + tsName + '">' + tsName + '</h2>');
               lines.push('<ul title="' + tsName + '">');
@@ -432,9 +432,6 @@
     phantom.exit();
   }
 
-/*
- * main()
- */
   if (system.args.length === 2) {
     javadocHome = system.args[1];
   }
@@ -444,7 +441,8 @@
     phantom.exit(1);
   }
   javadocURI = javadocHome.replace(/\\/g, '/').replace(/^\/*/, 'file:///');
-  totalBytes = util.addToTotal();
+  phantom.injectJs('./jf-util.js');
+  totalBytes = jfUtil.addToTotal();
   actions = [
     loadData,
     writeAllClassesPage,

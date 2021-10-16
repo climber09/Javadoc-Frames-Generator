@@ -1,5 +1,5 @@
 'use strict';
-var pageUtil = function() {
+var jfUtil = function() {
 
   function dirname() {
     var basenameRE = new RegExp('/[^/]+$');
