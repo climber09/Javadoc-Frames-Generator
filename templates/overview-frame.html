@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title></title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css">
+<link rel="stylesheet" type="text/css" href="index-style.css">
+<style type="text/css">
+button {
+  font-family: Cantarell;
+  font-size: 14px;
+  /* font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+  font-size: 13px;*/
+  font-weight: bold;
+}
+.module{
+  background-color: #dee3e9;
+  color: #4A6782;
+  cursor: pointer;
+  padding: 3px;
+  margin: 1px auto;
+  width: 95%;
+  border: none;
+  text-align: left;
+  outline: none;
+  /* font-weight: bold; */
+  /* font-size: 13px; */
+}
+.module:hover{
+  background-color: #eee;
+}
+.content {
+  font-size: 12px;
+  padding: 0;
+  padding-bottom: 3px;
+  display: none;
+  overflow: hidden;
+}
+.content li::before{
+  content: '\002B\00a0';
+  color: #fff;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.expand_all, .collapse_all{
+  position: fixed;
+  right: 1px;
+  padding: 0 4px;
+  font-size: 1.2em;
+  line-height: 0.9;
+  opacity: 0.6;
+  cursor: pointer;
+}
+.expand_all:hover, .collapse_all:hover{
+  opacity: 1;
+}
+.expand_all{
+  top: 47px;
+}
+.collapse_all{
+  top: 68px;
+}
+.ec_box{
+    width: auto;
+    padding: 0;
+    margin: auto;
+}
+.ec_box::before{
+  content: '\002B';
+}
+.active::before{
+  content: '\2212';
+}
+.ec_box::before, .active::before{
+  color: #fff;
+}
+.ec_box:hover::before, .active:hover::before{
+  color: #555;
+}
+.indexContainer{
+  margin: 0;
+  padding: 0;
+  min-width: 250px;
+}
+.indexContainer h2{
+  margin-left: 10px;
+}
+</style>
+</head>
+<body>
+<h1 class="bar">%API_HEADING%</h1>
+<div class="indexHeader"><span><a href="allclasses-frame.html" target="packageFrame">All&nbsp;Classes</a></span><span><a href="allpackages-frame.html" target="packageListFrame">All&nbsp;Packages</a></span></div>
+<div class="indexContainer">
+<button type="button" class="expand_all" title="Expand All">&#x2b;</button>
+<button type="button" class="collapse_all" title="Collapse All">&#x2212;</button>
+<h2 title="Modules">Modules</h2>
+%NEW_CONTENT%
+</div>
+<script type="text/javascript">
+var coll = document.getElementsByClassName("module");
+for (var i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.parentNode.classList.toggle("active");
+    var content = this.parentNode.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+document.querySelector('button.expand_all').addEventListener('click', function(){
+  for(var i = 0; i < coll.length; i++) {
+    coll[i].parentNode.nextElementSibling.style.display = 'block';
+    coll[i].parentNode.classList.add('active');
+  }
+});
+document.querySelector('button.collapse_all').addEventListener('click', function(){
+  for(var i = 0; i < coll.length; i++) {
+    coll[i].parentNode.nextElementSibling.style.display = 'none';
+    coll[i].parentNode.classList.remove('active');
+  }
+});
+</script>
+</body>
+</html>

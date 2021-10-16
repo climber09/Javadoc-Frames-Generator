@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="stylesheet.css">
+<style type="text/css">
+/*
+ * Styles for IFRAME.
+ */
+.mainContainer {
+    margin:0 auto;
+    padding:0;
+    height:100%;
+    width:100%;
+    position:fixed;
+    top:0;
+    left:0;
+}
+.leftContainer {
+    height:100%;
+    position:fixed;
+    width:320px;
+}
+.leftTop {
+    position:relative;
+    float:left;
+    width:315px;
+    top:0;
+    left:0;
+    height:30%;
+    border-right:6px solid #ccc;
+    border-bottom:6px solid #ccc;
+}
+.leftBottom {
+    position:relative;
+    float:left;
+    width:315px;
+    bottom:0;
+    left:0;
+    height:70%;
+    border-right:6px solid #ccc;
+    border-top:1px solid #000;
+}
+.rightContainer {
+    position:absolute;
+    left:320px;
+    top:0;
+    bottom:0;
+    height:100%;
+    right:0;
+    border-left:1px solid #000;
+}
+.rightIframe {
+    margin:0;
+    padding:0;
+    height:100%;
+    right:30px;
+    width:100%;
+    overflow:visible;
+    margin-bottom:30px;
+}
+</style>
+</head>
+<body>
+<div class="mainContainer">
+<div class="leftContainer">
+<div class="leftTop">
+<iframe src="overview-frame.html" name="packageListFrame" title="All Modules"></iframe>
+</div>
+<div class="leftBottom">
+<iframe src="allclasses-frame.html" name="packageFrame" title="All classes and interfaces (except non-static nested types)"></iframe>
+</div>
+</div>
+<div class="rightContainer">
+<iframe src="overview-summary.html" name="classFrame" title="Package, class and interface descriptions" class="rightIframe"></iframe>
+</div>
+</div>
+</body>
+</html>

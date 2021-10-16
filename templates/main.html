@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="stylesheet.css">
+<script type="text/javascript">
+tmpTargetPage = "" + window.location.search;
+if (tmpTargetPage != "" && tmpTargetPage != "undefined")
+    tmpTargetPage = tmpTargetPage.substring(1);
+if (tmpTargetPage.indexOf(":") != -1 || (tmpTargetPage != "" && !validURL(tmpTargetPage)))
+    tmpTargetPage = "undefined";
+targetPage = tmpTargetPage;
+function validURL(url) {
+    try {
+        url = decodeURIComponent(url);
+    }
+    catch (error) {
+        return false;
+    }
+    var pos = url.indexOf(".html");
+    if (pos == -1 || pos != url.length - 5)
+        return false;
+    var allowNumber = false;
+    var allowSep = false;
+    var seenDot = false;
+    for (var i = 0; i < url.length - 5; i++) {
+        var ch = url.charAt(i);
+        if ('a' <= ch && ch <= 'z' ||
+                'A' <= ch && ch <= 'Z' ||
+                ch == '$' ||
+                ch == '_' ||
+                ch.charCodeAt(0) > 127) {
+            allowNumber = true;
+            allowSep = true;
+        } else if ('0' <= ch && ch <= '9'
+                || ch == '-') {
+            if (!allowNumber)
+                 return false;
+        } else if (ch == '/' || ch == '.') {
+            if (!allowSep)
+                return false;
+            allowNumber = false;
+            allowSep = false;
+            if (ch == '.')
+                 seenDot = true;
+            if (ch == '/' && seenDot)
+                 return false;
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
+function loadFrames() {
+    if (targetPage != "" && targetPage != "undefined") {
+         top.bottomFrame.location = top.targetPage;
+         let targetDiv = top.window.document.querySelector('div.topContainer');
+         if (targetPage === 'index-frame.html') {
+             targetDiv.innerHTML = '<button type="button" class="view_mode" title="View without frames" onclick="top.window.location.replace(\'main.html?index.html\')">NO FRAMES</button>';
+         } else {
+             targetDiv.innerHTML = '<button type="button" class="view_mode" title="View with frames" onclick="top.window.location.replace(\'main.html?index-frame.html\')">FRAMES</button>';
+         }
+    }
+}
+</script>
+<style type="text/css">
+.mainContainer{
+    margin:0 auto;
+    padding:0;
+    height:100%;
+    width:100%;
+    position:fixed;
+    top:0;
+    left:0;
+}
+.topContainer{
+  position: fixed;
+  top: 13px;
+  right: 180px;
+  z-index: 1;
+}
+.bottomContainer{
+  position: relative;
+  height: 100%;
+}
+.view_mode{
+  background-color: #fff;
+  color: #333;
+  border: none;
+  font-size: 0.8em;
+  font-weight: bold;
+  font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+  opacity: 0.5;
+  cursor: pointer;
+  margin: 0;
+  padding: 1px 3px;
+  min-width: 80px;
+}
+</style>
+</head>
+<body onload="loadFrames()">
+<script type="text/javascript">
+if (targetPage == "" || targetPage == "undefined") {
+    window.location.replace('main.html?index-frame.html');
+}
+</script>
+<div class="mainContainer">
+  <div class="topContainer">
+  </div>
+  <div class="bottomContainer">
+    <iframe src="" name="bottomFrame" title=""></iframe>
+  </div>
+</div>
+</body>
+</html>
