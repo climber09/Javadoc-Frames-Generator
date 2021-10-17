@@ -5,7 +5,7 @@ The Java Standard Edition API since version 11 has been published without the
 traditional HTML frames layout that many developers have become accustomed to. If
 you want to view the Java edition 11 (or later) API with HTML frames, as you
 could with earlier Java editions, then you may want to give this a try. The
-Javadoc Frames Generator is pure Javascript. It uses [Phantomjs](https://phantomjs.org)
+Javadoc Frames Generator is pure JavaScript. It uses [Phantomjs](https://phantomjs.org)
 to parse the javadoc files in a local directory and produce the files needed for
 an HTML frames layout. The generated layout is similar to that of the Java SE
 10 API. 
