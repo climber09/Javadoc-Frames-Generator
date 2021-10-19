@@ -135,7 +135,7 @@
             }
           }
           sortKeys = Object.keys(fqnToContentMap);
-          sortKeys.sort(jfUtil.compareBySplitValue(' '));
+          sortKeys.sort(jfUtil.compareSplitValue(' '));
           sortKeys.forEach(function (key, i) {
             lines.push(fqnToContentMap[key]);
           });
@@ -307,9 +307,6 @@
     var page = webPage.create();
     var content;
 
-    page.onConsoleMessage = function(m) {
-      console.log(m);
-    }
     page.open(uri, function(status) {
       if (status !== 'success') {
         return callback('Failed to load ' + uri);
@@ -383,7 +380,7 @@
           for (var t in TypeSummary) {
             tsKeys = Object.keys(TypeSummary[t]);
             if (tsKeys.length > 0) {
-              tsKeys.sort(jfUtil.compareIgnoreCase);
+              tsKeys.sort(jfUtil.compareByLevel);
               tsName = (t === 'Class')? t.concat('es'): t.concat('s');
               lines.push('<h2 title="' + tsName + '">' + tsName + '</h2>');
               lines.push('<ul title="' + tsName + '">');
