@@ -103,7 +103,7 @@
         indexTitle = 'Overview (' + apiHeading + ' )';
         pageTitle = 'All&nbsp;Classes (' + apiHeading + ' )';
 
-        var content = page.evaluate(function() {
+        var lines = page.evaluate(function() {
           var fqnToContentMap = {};
           var sections = document.querySelectorAll('section');
           var lines = [], sortKeys;
@@ -115,7 +115,11 @@
 
             for (var j = 0, iLen = items.length; j < iLen; j++) {
               pkgName = items[j].firstChild.nodeValue;
-              aTag = items[j].querySelector('a[href]');
+              if (items[j].children[0].nodeName == 'A') {
+                aTag = items[j].children[0];
+              } else {
+                continue;
+              }
               typeName = aTag.innerHTML.replace(/<[^>]+>/g, '');
               fqName = pkgName + typeName;
               href = aTag.attributes['href'].value;
@@ -135,13 +139,34 @@
           sortKeys.forEach(function (key, i) {
             lines.push(fqnToContentMap[key]);
           });
-          return lines.join('\n');
+          return lines;
         });
 
         try {
-          content = fs.read(source)
+          // filter out non-static inner classes and interfaces.
+          for(var i = 0, l = lines.length; i < l; i++) {
+            var fqName = lines[i].replace(/^.+ href="(.+)\.html" .+$/, '$1');
+            var baseName = fqName.substring(fqName.lastIndexOf('/') + 1);
+            if (baseName.indexOf('.') != -1) {
+              var fileName = javadocHome + fs.separator + fqName.replace(/\//g, fs.separator) + '.html'
+              var fstream = fs.open(fileName, 'r');
+              var line, isStaticMember = false;
+              while(! fstream.atEnd() && ! isStaticMember) {
+                line = fstream.readLine();
+                if (line.match('static( final)? (?:class|interface|@interface|enum).+' + baseName)) {
+                  isStaticMember = true;
+                }
+              }
+              fstream.close();
+              if (! isStaticMember) {
+                delete lines[i];
+              }
+            }
+          }
+
+          var content = fs.read(source)
               .replace('<title>', '<title>' + pageTitle)
-              .replace('%NEW_CONTENT%', content);
+              .replace('%NEW_CONTENT%', lines.join('\n'));
 
           fs.write(dest, content, 'w');
           return callback(diskWriteLog(dest), function(){page.close()});
