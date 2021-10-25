@@ -5,73 +5,145 @@
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="stylesheet.css">
 <style type="text/css">
-.mainContainer {
-    margin:0 auto;
-    padding:0;
-    height:100%;
-    width:100%;
-    position:fixed;
-    top:0;
-    left:0;
+* {
+  margin: 0;
+  padding: 0;
 }
-.leftContainer {
-    height:100%;
-    position:fixed;
-    width:320px;
+#leftFrame, #rightFrame, #classFrameWrapper {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  overflow: hidden;
 }
-.leftTop {
-    position:relative;
-    float:left;
-    width:315px;
-    top:0;
-    left:0;
-    height:30%;
-    border-right:6px solid #ccc;
-    border-bottom:6px solid #ccc;
+#rightFrame {
+  left: 320px;
+  right: 0;
 }
-.leftBottom {
-    position:relative;
-    float:left;
-    width:315px;
-    bottom:0;
-    left:0;
-    height:70%;
-    border-right:6px solid #ccc;
-    border-top:1px solid #000;
+#leftFrame {
+  left: 0;
+  width: 320px;
 }
-.rightContainer {
-    position:absolute;
-    left:320px;
-    top:0;
-    bottom:0;
-    height:100%;
-    right:0;
-    border-left:1px solid #000;
+#classFrameWrapper {
+  left: 7px;
+  right: 0;
 }
-.rightIframe {
-    margin:0;
-    padding:0;
-    height:100%;
-    right:30px;
-    width:100%;
-    overflow:visible;
-    margin-bottom:30px;
+#leftTop, #leftBottom, #horizHandle {
+  position: relative;
+  left: 0;
+  width: inherit;
+}
+#leftTop {
+  top: 0;
+  height: 30%;
+}
+#leftBottom {
+  bottom: 0;
+  height: 70%;
+}
+#packageFrameWrapper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 7px;
+  bottom: 0;
+}
+#horizHandle {
+  height: 5px;
+  cursor: row-resize;
+  z-index: 5;
+}
+#vertHandle {
+  height: 100%;
+  float: left;
+  width: 5px;
+  cursor: col-resize;
+  z-index: 5;
+}
+#horizHandle, #vertHandle {
+  background-color: #ddd;
+  border: 1px solid #998;
+}
+iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+#cover {
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
 }
 </style>
 </head>
 <body>
-<div class="mainContainer">
-<div class="leftContainer">
-<div class="leftTop">
+<div id="cover"></div>
+<div id="leftFrame">
+<div id="leftTop">
 <iframe src="overview-frame.html" name="packageListFrame" title="All Modules"></iframe>
 </div>
-<div class="leftBottom">
+<div id="leftBottom">
+<div id="horizHandle"></div>
+<div id="packageFrameWrapper">
 <iframe src="allclasses-frame.html" name="packageFrame" title="All classes and interfaces (except non-static nested types)"></iframe>
 </div>
 </div>
-<div class="rightContainer">
-<iframe src="overview-summary.html" name="classFrame" title="Package, class and interface descriptions" class="rightIframe"></iframe>
+</div>
+<div id="rightFrame">
+<div id="vertHandle"></div>
+<div id="classFrameWrapper">
+<iframe name="classFrame" src="overview-summary.html" title="Package, class and interface descriptions"></iframe>
 </div>
 </div>
+<script type="text/javascript">
+(function() {
+  var hh = document.getElementById('horizHandle'),
+      vh = document.getElementById('vertHandle'),
+      lf = document.getElementById('leftFrame'),
+      rf = document.getElementById('rightFrame'),
+      lt = document.getElementById('leftTop'),
+      lb = document.getElementById('leftBottom'),
+      c  = document.getElementById('cover');
+
+  function resizeHorizontal(e) {
+    c.style.cursor = 'col-resize';
+    c.style.display = 'block';
+    rf.style.left = lf.style.width = e.pageX + "px";
+  }
+
+  function resizeVertical(e) {
+    c.style.cursor = 'row-resize';
+    c.style.display = 'block';
+    var pt = ((e.pageY-2)*100)/window.innerHeight,
+        pb =  100 - pt;
+    lt.style.height = pt + "%";
+    lb.style.height = pb + "%";
+  }
+
+  function halt(resizer) {
+    return function() {
+      c.style.display = 'none';
+      window.removeEventListener('mousemove', resizer);
+  }};
+
+  vh.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    window.addEventListener('mousemove', resizeHorizontal);
+    window.addEventListener('mouseup', halt(resizeHorizontal));
+  });
+
+  hh.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    window.addEventListener('mousemove', resizeVertical);
+    window.addEventListener('mouseup', halt(resizeVertical));
+  });
+})();
+</script>
 </body>
 </html>
