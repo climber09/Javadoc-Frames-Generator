@@ -457,6 +457,9 @@
   if (system.args.length === 2) {
     javadocHome = system.args[1];
   }
+  if (javadocHome === '.') {
+    javadocHome = fs.workingDirectory
+  }
   javadocHome = javadocHome.trim().replace(/[\/\\]+$/, '');
   if (! fs.isDirectory(javadocHome)) {
     console.log('Not a valid directory: "' + javadocHome + '"');
