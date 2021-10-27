@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="stylesheet.css">
 <style type="text/css">
-* {
+*{
   margin: 0;
   padding: 0;
 }
@@ -27,7 +27,7 @@
   left: 7px;
   right: 0;
 }
-#leftTop, #leftBottom, #horizHandle {
+#leftTop, #leftBottom, #horizHandleSub {
   position: relative;
   left: 0;
   width: inherit;
@@ -47,21 +47,31 @@
   top: 7px;
   bottom: 0;
 }
-#horizHandle {
+#horizHandleSub {
   height: 5px;
-  cursor: row-resize;
-  z-index: 5;
+  left: 0;
 }
 #vertHandle {
   height: 100%;
   float: left;
   width: 5px;
   cursor: col-resize;
-  z-index: 5;
 }
-#horizHandle, #vertHandle {
+#horizHandleSub, #vertHandle {
+  z-index: 5;
   background-color: #ddd;
   border: 1px solid #998;
+}
+#horizHandleSuper {
+  position: absolute;
+  left: 0;
+  top: calc(30% + 1px);
+  width: 321px;
+  height: 5px;
+  cursor: row-resize;
+  background-color: #ddd;
+  border: none;
+  z-index: 6;
 }
 iframe {
   position: absolute;
@@ -84,12 +94,13 @@ iframe {
 </head>
 <body>
 <div id="cover"></div>
+<div id="horizHandleSuper"></div>
 <div id="leftFrame">
 <div id="leftTop">
 <iframe src="overview-frame.html" name="packageListFrame" title="All Modules"></iframe>
 </div>
 <div id="leftBottom">
-<div id="horizHandle"></div>
+<div id="horizHandleSub"></div>
 <div id="packageFrameWrapper">
 <iframe src="allclasses-frame.html" name="packageFrame" title="All classes and interfaces (except non-static nested types)"></iframe>
 </div>
@@ -103,7 +114,7 @@ iframe {
 </div>
 <script type="text/javascript">
 (function() {
-  var hh = document.getElementById('horizHandle'),
+  var hh = document.getElementById('horizHandleSuper'),
       vh = document.getElementById('vertHandle'),
       lf = document.getElementById('leftFrame'),
       rf = document.getElementById('rightFrame'),
@@ -114,7 +125,8 @@ iframe {
   function resizeHorizontal(e) {
     c.style.cursor = 'col-resize';
     c.style.display = 'block';
-    rf.style.left = lf.style.width = e.pageX + "px";
+    rf.style.left = lf.style.width = e.pageX + 'px';
+    hh.style.width = e.pageX + 1 + 'px';
   }
 
   function resizeVertical(e) {
@@ -122,8 +134,9 @@ iframe {
     c.style.display = 'block';
     var pt = ((e.pageY-2)*100)/window.innerHeight,
         pb =  100 - pt;
-    lt.style.height = pt + "%";
-    lb.style.height = pb + "%";
+    lt.style.height = pt + '%';
+    hh.style.top = 'calc(' + lt.style.height + ' + 1px)';
+    lb.style.height = pb + '%';
   }
 
   function halt(resizer) {
