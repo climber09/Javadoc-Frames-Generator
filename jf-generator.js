@@ -320,7 +320,8 @@
             Enum : {},
             Exception : {},
             Error : {},
-            Annotation : {}
+            Annotation : {},
+            Record : {}
           };
 
           function ancestorTest(n, re) {
@@ -381,7 +382,9 @@
             tsKeys = Object.keys(TypeSummary[t]);
             if (tsKeys.length > 0) {
               tsKeys.sort(jfUtil.compareByLevel);
-              tsName = (t === 'Class')? t.concat('es'): t.concat('s');
+              tsName = (t === 'Class')? t.concat('es'):
+                       (t === 'Record')? t.concat('&nbsp;Classes'):
+                       t.concat('s');
               lines.push('<h2 title="' + tsName + '">' + tsName + '</h2>');
               lines.push('<ul title="' + tsName + '">');
 
